@@ -1,0 +1,34 @@
+[
+    [
+        {
+            "previous_tx_hash": null,
+            "amount": 90,
+            "from_did": "bank_a",
+            "to_did": "alice",
+            "issued_at": 1702384221726,
+            "expiry_at": 1733920221726,
+            "tx_hash": "0xbc61f1f447a415d11b01305c27413875c58bec41bcbc2128d4404419f4c2d787",
+            "signed_tx_hash": "0x5a2418440269c1a2dc83d87f460162a433ea47913857dcceafd35acb0ce9f31e01e6f857de87cff08340f4fabcd3ba635d6ad2c2914fbeb8f0f4369c1b1aa485"
+        },
+        {
+            "previous_tx_hash": "0xbc61f1f447a415d11b01305c27413875c58bec41bcbc2128d4404419f4c2d787",
+            "amount": 10,
+            "from_did": "alice",
+            "to_did": "bob",
+            "issued_at": 1702384263800,
+            "expiry_at": 1733920221726,
+            "tx_hash": "0x26138367b1782657cb460feb58d82cc84b9cd4ab78393c23039b740c55d9bce5",
+            "signed_tx_hash": "0x90b8c3e5d312bf452bfae48291e17fdf423d4205f09b8cd629eba8dd8409dd383f296d3ca28ddd44f0d8cfeaa737af0755ad2703ecca7254ed5db06d549a6180"
+        },
+        {
+            "previous_tx_hash": "0x26138367b1782657cb460feb58d82cc84b9cd4ab78393c23039b740c55d9bce5",
+            "amount": 10,
+            "from_did": "bob",
+            "to_did": "bank_b",
+            "issued_at": 1702384408175,
+            "expiry_at": 1733920221726,
+            "tx_hash": "0xd2df21c9cefd6d091abd278bc0682b36b03f8a2c51dfd99792588e9c1972e82a",
+            "signed_tx_hash": "0x56ab4de312af9fcde038a644253c75394e81d992994126de017c757718dabb2aa8fdcb9e93a841ab4795c445bb003994554a29dfa2bd4099bd41a7a494577386"
+        }
+    ]
+]

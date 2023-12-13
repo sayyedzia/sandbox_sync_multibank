@@ -1,0 +1,172 @@
+[
+    [
+        {
+            "previous_tx_hash": null,
+            "from_did": "did:nbg:bank1",
+            "to_did": "did:nbg:alice",
+            "amount": 20,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdb1al"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:alice",
+            "to_did": "did:nbg:charlie",
+            "amount": 20,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdalch"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:charlie",
+            "to_did": "did:nbg:bank1",
+            "amount": 20,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdchb1"
+        }
+    ],
+    [
+        {
+            "previous_tx_hash": null,
+            "from_did": "did:nbg:bank2",
+            "to_did": "did:nbg:bob",
+            "amount": 40,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdb2bo"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:bob",
+            "to_did": "did:nbg:charlie",
+            "amount": 30,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdboch"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:charlie",
+            "to_did": "did:nbg:bank1",
+            "amount": 30,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdchb1"
+        }
+    ],
+    [
+        {
+            "previous_tx_hash": null,
+            "from_did": "did:nbg:bank1",
+            "to_did": "did:nbg:charlie",
+            "amount": 10,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdb1ch"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:charlie",
+            "to_did": "did:nbg:bank1",
+            "amount": 10,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdchb1"
+        }
+    ],
+    [
+        {
+            "previous_tx_hash": null,
+            "from_did": "did:nbg:bank3",
+            "to_did": "did:nbg:dave",
+            "amount": 100,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdb3da"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:dave",
+            "to_did": "did:nbg:charlie",
+            "amount": 10,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebddach"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:charlie",
+            "to_did": "did:nbg:bank1",
+            "amount": 10,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdchb1"
+        }
+    ],
+    [
+        {
+            "previous_tx_hash": null,
+            "from_did": "did:nbg:bank3",
+            "to_did": "did:nbg:dave",
+            "amount": 100,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdb3da"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:dave",
+            "to_did": "did:nbg:charlie",
+            "amount": 10,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebddach"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:dave",
+            "to_did": "did:nbg:eve",
+            "amount": 30,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebddaev"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:eve",
+            "to_did": "did:nbg:charlie",
+            "amount": 20,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdevch"
+        },
+        {
+            "previous_tx_hash": "",
+            "from_did": "did:nbg:charlie",
+            "to_did": "did:nbg:bank1",
+            "amount": 20,
+            "expiry_at": 1725366604016,
+            "issued_at": 1693830604016,
+            "signed_tx_hash": "0xdee7a4c81b9633f32d30af892994927b2cb1e371f90dc3c3fea897799b2d867ccee0c3df07c43987cc450dc34dcf3d0d0a27da9682703e8114764284fc7f7c8f",
+            "tx_hash": "0x4d31d271258c093b58110569aa47d6922bfbe9f04e440a5af23d3af50ebdchb1"
+        }
+    ]
+]
