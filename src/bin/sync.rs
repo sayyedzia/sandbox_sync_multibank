@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use chrono::Utc;
 use neo4rs::{query, ConfigBuilder, Graph};
 
 #[derive(Debug, serde::Serialize, serde::Deserialize, Clone, PartialEq)]
@@ -13,7 +14,7 @@ pub struct Transaction {
     tx_hash: String,
     signed_tx_hash: String,
 }
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct InterBankAmount {
     from_bank: String,
     to_bank: String,
@@ -32,22 +33,27 @@ async fn main() {
         let issuance = chain.first().unwrap();
         let sync = chain.last().unwrap();
 
-        let ib_amount = InterBankAmount {
-            from_bank: issuance.from_did.clone(),
-            to_bank: sync.to_did.clone(),
-            amount: sync.amount,
-        };
+        let from_bank = issuance.from_did.clone();
+        let to_bank = sync.to_did.clone();
 
-        inter_bank_amount.push(ib_amount)
+        if from_bank != to_bank {
+            let ib_amount = InterBankAmount {
+                from_bank,
+                to_bank,
+                amount: sync.amount,
+            };
+            inter_bank_amount.push(ib_amount)
+        }
     }
-    // remove duplicates now exist in hm
-    // type Amount = HashMap<(String, String), i128>;
-    // let mut hm: Amount = Amount::new();
-    // let mut temp: Amount = Amount::new();
-    //  for element in ib_amount {
-    //     *hm.entry((element.from, element.to)).or_insert(0) += element.amount;
-    // }
-    // println!("{hm:#?}");
+    // no duplicates now exist in amount map
+    type Amount = HashMap<(String, String), u128>;
+    let mut interbank_amount_map: Amount = Amount::new();
+    for element in inter_bank_amount.clone() {
+        *interbank_amount_map
+            .entry((element.from_bank, element.to_bank))
+            .or_insert(0) += element.amount;
+    }
+    println!("{interbank_amount_map:#?}");
 
     // for ((from, to), amount) in hm.clone() {
     //     let key = (from.clone(), to.clone());
@@ -59,23 +65,23 @@ async fn main() {
     //         // hm.remove(&key);
     //     }
     // }
-    println!("{:#?}", inter_bank_amount);
+    // println!("{:#?}", inter_bank_amount);
 
-    persist_tx(inter_bank_amount).await;
+    persist_tx(interbank_amount_map).await;
 }
 
-async fn persist_tx(inter_bank_amount: Vec<InterBankAmount>) {
+async fn persist_tx(inter_bank_amount: HashMap<(String, String), u128>) {
     let graph = connect().await;
     // add r properties:tx_hash, sign
-    for tx in inter_bank_amount {
-        let query_str = format!("CREATE (:InterBankClearance{{name:$from_bank}})-[:`{}`{{state:'PENDING',from_bank:$from_bank,to_bank:$to_bank,amount:$amount}}]->(:InterBankClearance{{name:$to_bank}})",tx.amount);
+    for ((from_bank, to_bank), amount) in inter_bank_amount {
+        let query_str = format!("CREATE (:InterBankClearance{{name:$from_bank}})-[:`{}`{{status:'PENDING',from_bank:$from_bank,to_bank:$to_bank,amount:$amount,issued_at: $issued_at}}]->(:InterBankClearance{{name:$to_bank}})",amount);
         let query = query(&query_str)
-            .param("from_bank", tx.from_bank)
-            .param("to_bank", tx.to_bank)
-            .param("amount", tx.amount.to_string())
-            ;
+            .param("from_bank", from_bank)
+            .param("to_bank", to_bank)
+            .param("amount", amount.to_string())
+            .param("issued_at", Utc::now().timestamp_millis());
 
-        graph.run(query).await.unwrap();
+        graph.execute(query).await.unwrap();
     }
 }
 async fn connect() -> Graph {

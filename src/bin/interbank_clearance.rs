@@ -1,8 +1,9 @@
+use chrono::{Duration, Utc};
 use neo4rs::{query, ConfigBuilder, Graph};
 use tungstenite::Message;
 use url::Url;
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, PartialEq)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, Default)]
 pub struct Transaction {
     previous_tx_hash: Option<String>,
     amount: u128,
@@ -13,23 +14,39 @@ pub struct Transaction {
     tx_hash: String,
     signed_tx_hash: String,
 }
-#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, PartialEq)]
+
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+pub struct ClaimRequest {
+    pub did: String,      // hex
+    pub bank_did: String, // hex
+    pub amount: u128,
+    pub chained_transactions: Vec<Vec<Transaction>>,
+    clearance: Option<bool>, // todo: sign and hash? to be discussed
+}
+
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
+struct WSClaimRequest {
+    event: String,
+    data: ClaimRequest,
+}
+
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
 struct Res {
     transaction: Option<Transaction>,
     ack_id: String,
 }
-#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, PartialEq)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
 struct WSClaimResponse {
     data: Res,
     success: bool,
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, PartialEq)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
 struct Msg {
     message: String,
 }
 
-#[derive(Debug, serde::Serialize, serde::Deserialize, Clone, PartialEq)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
 struct WSAckResponse {
     data: Msg,
     success: bool,
@@ -37,117 +54,126 @@ struct WSAckResponse {
 #[tokio::main]
 async fn main() {
     // FETCH ALL BANK DUES
-    fetch_bank_dues().await;
+    let mut db_res = fetch_bank_dues().await.unwrap();
 
-    let (mut socket, response) =
-        tungstenite::connect(Url::parse("ws://localhost:8001/v3/api/offline/claim/").unwrap())
+    while let Some(row) = db_res.next().await.unwrap() {
+        let mut tx: Transaction = Default::default();
+        if let Some(rel) = row.get("relation") {
+            let relation: neo4rs::Relation = rel;
+
+            tx = Transaction {
+                previous_tx_hash: None,
+                amount: relation
+                    .get::<String>("amount")
+                    .expect("amount")
+                    .parse::<u128>()
+                    .unwrap(),
+                from_did: relation.get::<String>("to_bank").expect("from"),
+                to_did: relation.get::<String>("from_bank").expect("to"),
+                issued_at: relation.get::<i64>("issued_at").expect("time"),
+                expiry_at: (Utc::now() + Duration::days(365)).timestamp_millis(),
+                tx_hash: String::new(),
+                signed_tx_hash: String::new(),
+            };
+
+            let claim_req = ClaimRequest {
+                did: tx.from_did.clone(),
+                bank_did: tx.to_did.clone(),
+                amount: tx.amount,
+                chained_transactions: vec![vec![tx.clone()]],
+                clearance: Some(true),
+            };
+
+            let ws_claim_req = WSClaimRequest {
+                event: "claim".to_string(),
+                data: claim_req,
+            };
+            println!("From: {:#?}", ws_claim_req);
+
+            let (mut socket, response) = tungstenite::connect(
+                Url::parse("ws://localhost:8000/v3/api/offline/claim/").unwrap(),
+            )
             .expect("Can't connect");
 
-    socket
-        .write_message(Message::Text(
-            r#"{
-                "event":"claim",
-                "data": {
-                    "did": "0x6469643a6e62673a626f62000000000000000000000000000000000000000000",
-                    "bank_did": "0x6469643a6e62673a62616e6b5f62000000000000000000000000000000000000",
-                    "amount":2,
-                    "chained_transactions":[
-                        [
-                          {
-                            "previous_tx_hash": null,
-                            "amount": 90,
-                            "from_did": "0x6469643a6e62673a62616e6b0000000000000000000000000000000000000000",
-                            "to_did": "0x6469643a6e62673a616c69636500000000000000000000000000000000000000",
-                            "issued_at": 1702472809124,
-                            "expiry_at": 1734008809124,
-                            "tx_hash": "0x756e42f807e015837509f1e4b56e4418480b9989680fbae9c604c6b82d8255d8",
-                            "signed_tx_hash": "0xfaf2927bf4130c30abb32b44ea80c38a83ba8ed46965f9d08ce03e9eb328292a20730c40419d8112cc3c265bf0afa508666b8638663f6ab48b3fae427afc0f84"
-                          },
-                          {
-                            "previous_tx_hash": "0x756e42f807e015837509f1e4b56e4418480b9989680fbae9c604c6b82d8255d8",
-                            "amount": 10,
-                            "from_did": "0x6469643a6e62673a616c69636500000000000000000000000000000000000000",
-                            "to_did": "0x6469643a6e62673a626f62000000000000000000000000000000000000000000",
-                            "issued_at": 1702472836843,
-                            "expiry_at": 1734008809124,
-                            "tx_hash": "0xbee8c04c5e200dd96ba04346a57afb4be5277b2dea382f7ed5579d7f9a74281b",
-                            "signed_tx_hash": "0x1a2d02c2f38821818e5c3e8767c9c9dd932f51cbd3e301c03c9bab61778bc44dbca4fd3aed96bde88012a1dc5b6e8c9592a2b347a3daf9f98d673aca6ba0568e"
-                          },
-                          {
-                            "previous_tx_hash": "0xbee8c04c5e200dd96ba04346a57afb4be5277b2dea382f7ed5579d7f9a74281b",
-                            "amount": 10,
-                            "from_did": "0x6469643a6e62673a626f62000000000000000000000000000000000000000000",
-                            "to_did": "0x6469643a6e62673a62616e6b5f62000000000000000000000000000000000000",
-                            "issued_at": 1702472841801,
-                            "expiry_at": 1734008809124,
-                            "tx_hash": "0xde2beebdc0967a864e973a3d3d3971d14bb1afddd38f1e3a33b0f7aec3dcc8d0",
-                            "signed_tx_hash": "0x76afcb8473ea6109fe164876cd2220c06902c004a9aeac1ca2b7fbc62df21d062dedc23db0af5da98e146e94d8c16234f61cbfc3179313195c4766f5579f0c8b"
-                          }
-                        ]
-                      ]
+            socket
+                .write_message(Message::Text(serde_json::to_string(&ws_claim_req).unwrap()))
+                .unwrap();
+
+            let msg: Message = socket.read_message().expect("Error reading message");
+            let msg = match msg {
+                tungstenite::Message::Text(s) => s,
+                _ => {
+                    panic!()
                 }
-            }"#
-            .into(),
-        ))
-        .unwrap();
+            };
 
-    let msg: Message = socket.read_message().expect("Error reading message");
-    let msg = match msg {
-        tungstenite::Message::Text(s) => s,
-        _ => {
-            panic!()
-        }
-    };
+            let parsed_claim_response: WSClaimResponse = serde_json::from_str(&msg).unwrap();
+            println!("{:#?}", parsed_claim_response);
 
-    let parsed_claim_response: WSClaimResponse = serde_json::from_str(&msg).unwrap();
-    println!("{:#?}", parsed_claim_response);
+            if parsed_claim_response.success {
+                #[derive(serde::Serialize, Debug)]
+                struct AckReq {
+                    ack_id: String,
+                    event: String,
+                }
+                let msg = AckReq {
+                    ack_id: parsed_claim_response.data.ack_id,
+                    event: String::from("ack"),
+                };
 
-    if parsed_claim_response.success {
-        #[derive(serde::Serialize, Debug)]
-        struct AckReq {
-            ack_id: String,
-            event: String,
-        }
-        let msg = AckReq {
-            ack_id: parsed_claim_response.data.ack_id,
-            event: String::from("ack"),
-        };
+                // let msg = format!(
+                //     r#"{{"ack_id": {},"event": "ack"}}"#,
+                //     parsed_claim_response.data.ack_id
+                // );
+                println!("{:#?}", msg);
+                socket
+                    .write_message(Message::Text(serde_json::to_string(&msg).unwrap()))
+                    .unwrap();
 
-        // let msg = format!(
-        //     r#"{{"ack_id": {},"event": "ack"}}"#,
-        //     parsed_claim_response.data.ack_id
-        // );
-        println!("{:#?}", msg);
-        socket
-            .write_message(Message::Text(serde_json::to_string(&msg).unwrap()))
-            .unwrap();
+                let msg: Message = socket.read_message().expect("Error reading message");
+                let msg = match msg {
+                    tungstenite::Message::Text(s) => s,
+                    _ => {
+                        panic!("failed to get String")
+                    }
+                };
 
-        let msg: Message = socket.read_message().expect("Error reading message");
-        let msg = match msg {
-            tungstenite::Message::Text(s) => s,
-            _ => {
-                panic!("failed to get String")
+                let parsed_ack_response: WSAckResponse = serde_json::from_str(&msg).unwrap();
+                println!("{:#?}", parsed_ack_response);
+
+                if parsed_ack_response.success {
+                    update_status(tx.to_did, tx.from_did, tx.amount, tx.issued_at)
+                        .await;
+                }
             }
-        };
-
-        let parsed_ack_response: WSAckResponse = serde_json::from_str(&msg).unwrap();
-        println!("{:#?}", parsed_ack_response);
+            socket.close(None).unwrap();
+        }
     }
-
-    socket.close(None).unwrap();
 }
 
-async fn fetch_bank_dues() {
+async fn fetch_bank_dues() -> Result<neo4rs::RowStream, neo4rs::Error> {
     let graph = connect().await;
 
     let query =
-        query("MATCH (:InterBankClearance)-[r {state:'PENDING'}]->(:InterBankClearance) RETURN r");
-    let mut db_res = graph.execute(query).await.unwrap();
+        query("MATCH (:InterBankClearance)-[relation {status:'PENDING'}]->(:InterBankClearance) RETURN relation");
+    let db_res = graph.execute(query).await;
 
-    while let Some(row) = db_res.next().await.unwrap() {
-        println!("{:#?}", row)
-    }
+    db_res
 }
+
+async fn update_status(from_bank: String, to_bank: String, amount: u128, issued_at: i64) {
+    let graph = connect().await;
+
+    let query =
+        query("MATCH (from_bank:InterBankClearance)-[relation]->(to_bank:InterBankClearance) WHERE from_bank.name = $from_bank AND to_bank.name = $to_bank AND relation.status = 'PENDING' AND relation.issued_at = $issued_at AND relation.amount = $amount SET relation.status = 'CLAIMED'")
+        .param("from_bank", from_bank)
+        .param("to_bank", to_bank)
+        .param("issued_at", issued_at)
+        .param("amount", amount.to_string())
+        ;
+    graph.run(query).await;
+}
+
 async fn connect() -> Graph {
     let config = ConfigBuilder::default()
         .uri("localhost:7687")

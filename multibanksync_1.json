@@ -5,30 +5,30 @@
             "amount": 90,
             "from_did": "bank_a",
             "to_did": "alice",
-            "issued_at": 1702384221726,
-            "expiry_at": 1733920221726,
-            "tx_hash": "0xbc61f1f447a415d11b01305c27413875c58bec41bcbc2128d4404419f4c2d787",
-            "signed_tx_hash": "0x5a2418440269c1a2dc83d87f460162a433ea47913857dcceafd35acb0ce9f31e01e6f857de87cff08340f4fabcd3ba635d6ad2c2914fbeb8f0f4369c1b1aa485"
+            "issued_at": 1702472809124,
+            "expiry_at": 1734008809124,
+            "tx_hash": "0x756e42f807e015837509f1e4b56e4418480b9989680fbae9c604c6b82d8255d8",
+            "signed_tx_hash": "0xfaf2927bf4130c30abb32b44ea80c38a83ba8ed46965f9d08ce03e9eb328292a20730c40419d8112cc3c265bf0afa508666b8638663f6ab48b3fae427afc0f84"
         },
         {
-            "previous_tx_hash": "0xbc61f1f447a415d11b01305c27413875c58bec41bcbc2128d4404419f4c2d787",
+            "previous_tx_hash": "0x756e42f807e015837509f1e4b56e4418480b9989680fbae9c604c6b82d8255d8",
             "amount": 10,
             "from_did": "alice",
             "to_did": "bob",
-            "issued_at": 1702384263800,
-            "expiry_at": 1733920221726,
-            "tx_hash": "0x26138367b1782657cb460feb58d82cc84b9cd4ab78393c23039b740c55d9bce5",
-            "signed_tx_hash": "0x90b8c3e5d312bf452bfae48291e17fdf423d4205f09b8cd629eba8dd8409dd383f296d3ca28ddd44f0d8cfeaa737af0755ad2703ecca7254ed5db06d549a6180"
+            "issued_at": 1702472836843,
+            "expiry_at": 1734008809124,
+            "tx_hash": "0xbee8c04c5e200dd96ba04346a57afb4be5277b2dea382f7ed5579d7f9a74281b",
+            "signed_tx_hash": "0x1a2d02c2f38821818e5c3e8767c9c9dd932f51cbd3e301c03c9bab61778bc44dbca4fd3aed96bde88012a1dc5b6e8c9592a2b347a3daf9f98d673aca6ba0568e"
         },
         {
-            "previous_tx_hash": "0x26138367b1782657cb460feb58d82cc84b9cd4ab78393c23039b740c55d9bce5",
+            "previous_tx_hash": "0xbee8c04c5e200dd96ba04346a57afb4be5277b2dea382f7ed5579d7f9a74281b",
             "amount": 10,
             "from_did": "bob",
             "to_did": "bank_b",
-            "issued_at": 1702384408175,
-            "expiry_at": 1733920221726,
-            "tx_hash": "0xd2df21c9cefd6d091abd278bc0682b36b03f8a2c51dfd99792588e9c1972e82a",
-            "signed_tx_hash": "0x56ab4de312af9fcde038a644253c75394e81d992994126de017c757718dabb2aa8fdcb9e93a841ab4795c445bb003994554a29dfa2bd4099bd41a7a494577386"
+            "issued_at": 1702472841801,
+            "expiry_at": 1734008809124,
+            "tx_hash": "0xde2beebdc0967a864e973a3d3d3971d14bb1afddd38f1e3a33b0f7aec3dcc8d0",
+            "signed_tx_hash": "0x76afcb8473ea6109fe164876cd2220c06902c004a9aeac1ca2b7fbc62df21d062dedc23db0af5da98e146e94d8c16234f61cbfc3179313195c4766f5579f0c8b"
         }
     ]
 ]
