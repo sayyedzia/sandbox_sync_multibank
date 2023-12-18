@@ -3,7 +3,7 @@
         {
             "previous_tx_hash": null,
             "amount": 90,
-            "from_did": "bank_a",
+            "from_did": "bank_d",
             "to_did": "alice",
             "issued_at": 1702472809124,
             "expiry_at": 1734008809124,
@@ -22,7 +22,7 @@
         },
         {
             "previous_tx_hash": "0xbee8c04c5e200dd96ba04346a57afb4be5277b2dea382f7ed5579d7f9a74281b",
-            "amount": 10,
+            "amount": 5,
             "from_did": "bob",
             "to_did": "bank_b",
             "issued_at": 1702472841801,

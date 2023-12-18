@@ -3,6 +3,9 @@ use neo4rs::{query, ConfigBuilder, Graph};
 use tungstenite::Message;
 use url::Url;
 
+const CLEARANCE_MIN_THRESHOLD: u128 = 100;
+const CLEARANCE_MAX_THRESHOLD: u128 = u128::MAX;
+
 #[derive(Debug, serde::Serialize, serde::Deserialize, Clone, Default)]
 pub struct Transaction {
     previous_tx_hash: Option<String>,
@@ -56,6 +59,10 @@ async fn main() {
     // FETCH ALL BANK DUES
     let mut db_res = fetch_bank_dues().await.unwrap();
 
+    let mut total_clearance_amount: u128 = 0;
+
+    let mut clearance_txs: Vec<Transaction> = vec![];
+
     while let Some(row) = db_res.next().await.unwrap() {
         let mut tx: Transaction = Default::default();
         if let Some(rel) = row.get("relation") {
@@ -76,6 +83,15 @@ async fn main() {
                 signed_tx_hash: String::new(),
             };
 
+            total_clearance_amount += tx.amount;
+            clearance_txs.push(tx)
+        }
+    }
+    if total_clearance_amount < CLEARANCE_MIN_THRESHOLD {
+        println!("Very smol claimable amount: {}", total_clearance_amount);
+        return;
+    }
+    for tx in clearance_txs.clone() {
             let claim_req = ClaimRequest {
                 did: tx.from_did.clone(),
                 bank_did: tx.to_did.clone(),
@@ -90,10 +106,9 @@ async fn main() {
             };
             println!("From: {:#?}", ws_claim_req);
 
-            let (mut socket, response) = tungstenite::connect(
-                Url::parse("ws://localhost:8000/v3/api/offline/claim/").unwrap(),
-            )
-            .expect("Can't connect");
+            let (mut socket, response) =
+                tungstenite::connect(Url::parse("ws://localhost:8000/v3/api/offline/claim/").unwrap())
+                    .expect("Can't connect");
 
             socket
                 .write_message(Message::Text(serde_json::to_string(&ws_claim_req).unwrap()))
@@ -143,12 +158,12 @@ async fn main() {
 
                 if parsed_ack_response.success {
                     update_status(tx.to_did, tx.from_did, tx.amount, tx.issued_at)
-                        .await;
+                    .await;
                 }
             }
             socket.close(None).unwrap();
-        }
     }
+    println!("From: {:#?}", total_clearance_amount);
 }
 
 async fn fetch_bank_dues() -> Result<neo4rs::RowStream, neo4rs::Error> {

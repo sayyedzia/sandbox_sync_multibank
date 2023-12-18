@@ -69,19 +69,28 @@ async fn main() {
 
     persist_tx(interbank_amount_map).await;
 }
-
 async fn persist_tx(inter_bank_amount: HashMap<(String, String), u128>) {
     let graph = connect().await;
     // add r properties:tx_hash, sign
     for ((from_bank, to_bank), amount) in inter_bank_amount {
-        let query_str = format!("CREATE (:InterBankClearance{{name:$from_bank}})-[:`{}`{{status:'PENDING',from_bank:$from_bank,to_bank:$to_bank,amount:$amount,issued_at: $issued_at}}]->(:InterBankClearance{{name:$to_bank}})",amount);
+        let query_str = format!("
+        MERGE (source:InterBankClearance{{name:$from_bank}}) 
+            ON CREATE SET source.created_at = $now  
+            ON MATCH SET source.updated_at = $now 
+        MERGE (destination:InterBankClearance{{name:$to_bank}})  
+            ON CREATE SET destination.created_at = $now 
+            ON MATCH SET destination.updated_at = $now  
+        MERGE (source)-[relation:`{}`{{status:'PENDING',from_bank:$from_bank,to_bank:$to_bank,amount:$amount,issued_at:$now}}]->(destination)   
+            ON MATCH SET relation.updated_at = $now
+            
+            ",amount);
         let query = query(&query_str)
             .param("from_bank", from_bank)
             .param("to_bank", to_bank)
             .param("amount", amount.to_string())
-            .param("issued_at", Utc::now().timestamp_millis());
+            .param("now", Utc::now().timestamp_millis());
 
-        graph.execute(query).await.unwrap();
+        graph.run(query).await.unwrap();
     }
 }
 async fn connect() -> Graph {
